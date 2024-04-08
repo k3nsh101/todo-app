@@ -1,0 +1,17 @@
+extends layout
+
+block content
+    if tasks_list.length
+        each task in tasks_list
+            div(class="item")
+                div(class="item-name") #{task.title}
+                if task.dueDate
+                    div(class="due-date") #{task.dueDate}
+                else
+                    div(class="due-date") 
+                        br
+                div(class='priority') #{task.priority}
+            br
+
+    else
+        p There are no tasks.
