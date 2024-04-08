@@ -9,10 +9,10 @@ exports.tasks_list = async function(req, res) {
     res.render('tasks', { tasks_list: allTasks});
 };
 
-// Get an individual task
-exports.task_detail = async function(req, res) {
-    res.send("NOT IMPLEMENTED: Tasks list")
-};
+exports.get_task = async function(req, res) {
+    const task = await tasks.findById(req.params.taskid);
+    res.send(task);
+}
 
 // Create a new task: form page
 exports.task_create_get = async function(req, res) {
@@ -34,19 +34,44 @@ exports.task_create_post = async function(req, res) {
     res.redirect('/tasks')
 };
 
+exports.task_update = async function(req, res) {
+    const id = req.params.taskid;
+    try {
+        console.log(req.body)
+        const task = await tasks.findByIdAndUpdate(id, {
+            title: req.body.title,
+            description: req.body.description,
+            dueDate: req.body.dueDate,
+            priority: req.body.priority,
+            status: req.body.status,
+            category:    req.body.category,
+            updatedAt: new Date() 
+        }, { new:true });
 
-exports.task_update_get = async function(req, res) {
-    res.send("NOT IMPLEMENTED: Tasks list")
+        if (!task) {
+            res.sendStatus(404);
+        }
+        else {
+            res.status(200)
+            res.send(task)
+        }
+    } catch (e) {
+        res.sendStatus(400);
+    }
 };
 
-exports.task_update_post = async function(req, res) {
-    res.send("NOT IMPLEMENTED: Tasks list")
-};
-
-exports.task_delete_get = async function(req, res) {
-    res.send("NOT IMPLEMENTED: Tasks list")
-};
-
-exports.task_delete_post = async function(req, res) {
-    res.send("NOT IMPLEMENTED: Tasks list")
-};
+exports.task_delete = async function(req, res) {
+    const id = req.params.taskid;
+    try {
+        const task = await tasks.findByIdAndDelete(id);
+        if (!task) {
+            res.sendStatus(404);
+        }
+        else {
+            res.status(200)
+            res.send(task)
+        }
+    } catch (e) {
+        res.sendStatus(400);
+    }
+}

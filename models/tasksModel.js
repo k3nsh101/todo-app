@@ -4,7 +4,7 @@ const { DateTime, Zone } = require('luxon');
 const Schema = mongoose.Schema;
 
 const tasksSchema = new Schema({
-    title: { type:String}   , //required: true },
+    title: { type:String, required: true },
     description: String,
     dueDate: Date,
     priority: {
@@ -36,5 +36,9 @@ tasksSchema.virtual('date_updated_formatted').get(function() {
         return DateTime.fromJSDate(this.updatedAt).toLocaleString(DateTime.DATETIME_MED);
     }
 });
+
+tasksSchema.virtual('url').get(function() {
+    return `/tasks/${this._id}`
+})
 
 module.exports = mongoose.model("Tasks", tasksSchema);

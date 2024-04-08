@@ -12,18 +12,12 @@ router.get('/create', tasksController.task_create_get);
 router.post('/create', tasksController.task_create_post);
 
 // Retrieve the specific task
-router.get('/:taskid', function(req, res) {
-
-});
+router.get('/:taskid', tasksController.get_task);
 
 // Update the specific task
-router.put('/:taskid', function(req, res) {
-
-});
+router.put('/:taskid', tasksController.task_update);
 
 // Delete the specific task
-router.delete('/:taskid', function(req, res) {
-
-});
+router.delete('/:taskid', tasksController.task_delete);
 
 module.exports = router;

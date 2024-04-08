@@ -12,6 +12,8 @@ block content
                 else
                     br
                 div(class='priority') #{task.priority}
+                button(class='item-delete' onclick="deleteItem('" + task._id + "')") Delete
+                button(class='item-delete') Update
             br
 
     else
