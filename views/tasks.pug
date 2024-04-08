@@ -5,11 +5,12 @@ block content
         each task in tasks_list
             div(class="item")
                 div(class="item-name") #{task.title}
-                if task.dueDate
+                if (task.due_date_formatted)
+                    div(class="due-date") #{task.due_date_formatted}
+                else if (task.dueDate)
                     div(class="due-date") #{task.dueDate}
                 else
-                    div(class="due-date") 
-                        br
+                    br
                 div(class='priority') #{task.priority}
             br
 
