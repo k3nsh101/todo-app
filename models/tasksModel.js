@@ -16,10 +16,10 @@ const tasksSchema = new Schema({
         enum: ['Pending', 'Completed'],
         default: 'Pending',
     },
-    categoryID: Schema.Types.ObjectId,
+    categoryID: { type: Schema.Types.ObjectId, ref: 'Category' },
     createdAt: { type: Date, default: new Date()},
     updatedAt: Date,
-});
+}, {versionKey: false});
 
 tasksSchema.virtual('date_created_formatted').get(function() {
     return DateTime.fromJSDate(this.createdAt).toLocaleString(DateTime.DATETIME_MED);
