@@ -1,4 +1,5 @@
 const tasks = require('../models/tasksModel');
+const categories = require('../models/categoryModel');
 
 // Get all tasks
 exports.tasks_list = async function(req, res) {
@@ -21,14 +22,27 @@ exports.task_create_get = async function(req, res) {
 
 // Create a new task: POST request
 exports.task_create_post = async function(req, res) {
+    // First check if there is a same category
+    let categoryID = await categories.findOne({'title': req.body.category}, "_id")
+
+    // If not create a category
+    if (!categoryID){
+        const category = new categories({
+            'title': req.body.category,
+        });
+        
+        categoryID = category._id;
+        await category.save();
+    }
+
     const task = new tasks({
         title: req.body.title,
         description: req.body.description,
         dueDate: req.body.dueDate,
         priority: req.body.priority,
         status: req.body.status,
-        category: req.body.category,
-    });
+        categoryID,
+    }); 
 
     await task.save();
     res.redirect('/tasks')
@@ -36,15 +50,15 @@ exports.task_create_post = async function(req, res) {
 
 exports.task_update = async function(req, res) {
     const id = req.params.taskid;
+    const categoryID = await categories.findOne({'title': req.body.category}, "_id")
     try {
-        console.log(req.body)
         const task = await tasks.findByIdAndUpdate(id, {
             title: req.body.title,
             description: req.body.description,
             dueDate: req.body.dueDate,
             priority: req.body.priority,
             status: req.body.status,
-            category:    req.body.category,
+            categoryid: categoryID,
             updatedAt: new Date() 
         }, { new:true });
 
