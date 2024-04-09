@@ -1,6 +1,8 @@
 node_modules
 designs
 structure.md
+config
+.env
 
 # Logs
 logs
