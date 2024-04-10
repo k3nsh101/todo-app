@@ -15,13 +15,8 @@ exports.get_task = async function(req, res) {
     res.send(task);
 }
 
-// Create a new task: form page
-exports.task_create_get = async function(req, res) {
-    res.render('task_form')
-};
-
 // Create a new task: POST request
-exports.task_create_post = async function(req, res) {
+exports.create_task = async function(req, res) {
     // First check if there is a same category
     let categoryID = await categories.findOne({'title': req.body.category}, "_id")
 
@@ -32,6 +27,7 @@ exports.task_create_post = async function(req, res) {
         });
         
         categoryID = category._id;
+        console.log("creating new category" + categoryID);
         await category.save();
     }
 
@@ -40,12 +36,12 @@ exports.task_create_post = async function(req, res) {
         description: req.body.description,
         dueDate: req.body.dueDate,
         priority: req.body.priority,
-        status: req.body.status,
+        // status: req.body.status,
         categoryID,
     }); 
 
     await task.save();
-    res.redirect('/tasks')
+    res.sendStatus(201);
 };
 
 exports.task_update = async function(req, res) {
