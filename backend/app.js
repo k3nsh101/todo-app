@@ -4,6 +4,8 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
 
 const port = process.env.PORT || 3000;
 const mongoDB = process.env.DATABASE_URL;
@@ -20,6 +22,7 @@ app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/public', express.static('public'))
+app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/tasks', tasksRouter);
