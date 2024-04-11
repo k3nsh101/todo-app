@@ -4,7 +4,7 @@ import { Link, Navigate } from "react-router-dom";
 import useCategoryList from "./useCategoryList";
 import addTask from "./addTask";
 
-const CategoryForm = () => {
+const TaskForm = () => {
     const [title, setTitle] = useState("");
     const [dueDate, setDueDate] = useState("");
     const [category, setCategory] = useState("");
@@ -37,7 +37,6 @@ const CategoryForm = () => {
     return (
         <>
             <div className="header">
-                <img src="" alt="homepage image link" />
                 <h3>New Task</h3>
             </div>
             <form className="new-task-form">   
@@ -115,4 +114,4 @@ const CategoryForm = () => {
 }
 
 
-export default CategoryForm;
+export default TaskForm;
