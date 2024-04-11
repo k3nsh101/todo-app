@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+
 import addCategory from "./addCategory";
 
 const CategoryForm = () => {
@@ -66,6 +68,7 @@ const CategoryForm = () => {
                 <div className="form-submit">
                     <button onClick={handleClear}>Clear</button>
                     <button onClick={handleSubmit}>Add</button>
+                    <Link to="/new-task"><button>Back</button></Link>
                 </div>
             </form>
         </>

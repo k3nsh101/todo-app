@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
 
 import useCategoryList from "./useCategoryList";
 import addTask from "./addTask";
@@ -20,6 +21,7 @@ const CategoryForm = () => {
         if (res.ok){
             // route to homepage
             console.log(res);
+            <Navigate to="/add-task"/>
         }
     };
 
@@ -30,11 +32,6 @@ const CategoryForm = () => {
         setCategory("");
         setPriority("");
         setDescription("");
-    };
-
-    const newCategory = (event) => {
-        // route to CategoryForm
-        event.preventDefault();
     };
     
     return (
@@ -79,7 +76,7 @@ const CategoryForm = () => {
                                 <option key={item._id} value={item.title}>{item.title}</option>
                             ))}
                         </select>   
-                        <button onClick={newCategory}>New Category</button>
+                        <Link to="/new-category"><button>New Category</button></Link>
                     </label>
                     <br />
 
