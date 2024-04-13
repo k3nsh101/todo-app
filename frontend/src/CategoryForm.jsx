@@ -1,79 +1,86 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+
 
 import addCategory from "./addCategory";
 
-const CategoryForm = () => {
-    const [category, setCategory] = useState("");
-    const [description, setDescription] = useState("");
+import "./CategoryForm.css"
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+// Add server side validation to duplicate categories with same title,
+// add isSubmitSuccessful and validation in the frontend
+
+export default function CategoryForm() {
+    const navigate = useNavigate();
+    const form = useForm({
+        defaultValues: {
+            title: "",
+            description: ""
+        },
+        mode: "onTouched"
+    });
+    const { register, getValues, handleSubmit, formState, reset } = form;
+    const { errors, isSubmitting, isSubmitSuccessful } = formState;
+
+    const onSubmit = async () => {
         // Add a post request to /category endpoint
-        if (!category){
-            alert('Enter a category title');
-        }
-        else {
-            const res = await addCategory(category, description);
-            if (res.ok){
-                alert("Category added successfully.");
-                // add routing to homepage
-            }
+        const category = getValues("title");
+        const description = getValues("description");
+        const res = await addCategory(category, description);
+        if (res.ok){
+            alert("Category added successfully.");
+            navigate("/")
         }
     };
 
     const handleClear = (event) => {
         event.preventDefault();
-        setCategory("");
-        setDescription("");
+        reset()
     }
-    
+
+    useEffect( () => {
+        if (isSubmitSuccessful){
+            reset;
+        }
+    }, [isSubmitSuccessful, reset]);
+
     return (
         <>
             <div className="header">
-                <img src="" alt="homepage image link" />
-                <h3>Add Category</h3>
+                <h1>Add Category</h1>
             </div>
-            <form className="new-category-form">   
+            <form className="new-category-form" onSubmit={handleSubmit(onSubmit)} noValidate>  
                 <div className="content">
                     <label htmlFor="title">
                         Category Title
-                        <br />
-                        <input 
+                    </label>
+                    <input
                             type="text" 
                             id="title" 
-                            value={category} 
                             placeholder="Add new category"
-                            onChange={e => setCategory(e.target.value)}
+                            {...register("title", {required:"Title is required"})}                            
                         />
-                    </label><br />
-                    
-                    <br />
+                    <p className="errors">{errors.title?.message}</p>
 
                     <label htmlFor="description">
                         Description
-                        <br />
-                        <textarea 
+                    </label>
+                    <textarea
                             name="description" 
                             id="description" 
-                            value={description} 
                             cols="30" rows="10"
                             placeholder="Add your description..."
-                            onChange={e => setDescription(e.target.value)}
+                            {...register("description")}
+                            minRows={3}
+                            
                         ></textarea>
-                    </label>
-                    
-                    <br />
                 </div> 
                 <div className="form-submit">
                     <button onClick={handleClear}>Clear</button>
-                    <button onClick={handleSubmit}>Add</button>
+                    <button disabled={isSubmitting}>Add</button>
                     <Link to="/new-task"><button>Back</button></Link>
                 </div>
-            </form>
+            </form>                
         </>
     )
 }
-
-
-export default CategoryForm;
