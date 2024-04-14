@@ -18,24 +18,21 @@ exports.get_task = async function(req, res) {
 // Create a new task: POST request
 exports.create_task = async function(req, res) {
     // First check if there is a same category
-    let categoryID = await categories.findOne({'title': req.body.category}, "_id")
-
-    // If not create a category
-    if (!categoryID){
-        const category = new categories({
-            'title': req.body.category,
-        });
-        
-        categoryID = category._id;
-        console.log("creating new category" + categoryID);
-        await category.save();
+    let categoryID = undefined;
+    if (req.body.category){
+        categoryID = await categories.findOne({'title': req.body.category}, "_id");
     }
+
+    // if the request give "" values change those to undefined
+    const description = req.body.description || undefined;
+    const dueDate = req.body.dueDate || undefined;
+    const priority = req.body.priority || undefined;
 
     const task = new tasks({
         title: req.body.title,
-        description: req.body.description,
-        dueDate: req.body.dueDate,
-        priority: req.body.priority,
+        description,
+        dueDate,
+        priority,
         // status: req.body.status,
         categoryID,
     }); 
