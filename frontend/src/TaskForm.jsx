@@ -1,114 +1,157 @@
-import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { InputLabel, TextField, Button, Select, MenuItem } from "@mui/material"
+
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import useCategoryList from "./useCategoryList";
 import addTask from "./addTask";
 
 const TaskForm = () => {
-    const [title, setTitle] = useState("");
-    const [dueDate, setDueDate] = useState("");
-    const [category, setCategory] = useState("");
-    const [priority, setPriority] = useState("");
-    const [description, setDescription] = useState("");
+    const navigate = useNavigate();
 
     const categoryList = useCategoryList();
     const priorityList = ["Low", "Medium", "High"];
 
+    const form = useForm({
+        defaultValues: {
+            taskName: "",
+            dueDate: "",
+            category: "",
+            priority: "",
+            description: ""
+        },
+        mode: "onTouched"
+    });
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const res = addTask(title, dueDate, category, priority, description);
-        if (res.ok){
+    const { register, getValues, handleSubmit, formState, reset, control } = form;
+    const { errors, isSubmitting, isSubmitSuccessful } = formState;
+
+
+    const onSubmit = async () => {
+        const formData = {
+            taskName: getValues("taskName"),
+            dueDate: getValues("dueDate"),
+            category: getValues("category"),
+            priority: getValues("priority"),
+            description: getValues("description")
+        }
+
+        const res = await addTask(formData);
+        if (res.statusText === "Created"){
             // route to homepage
-            console.log(res);
-            <Navigate to="/add-task"/>
+            alert("Task added successfully");
+            navigate("/")
         }
     };
 
     const handleClear = (event) => {
         event.preventDefault();
-        setTitle("");
-        setDueDate("");
-        setCategory("");
-        setPriority("");
-        setDescription("");
+        reset();
     };
+
+    useEffect( () => {
+        if (isSubmitSuccessful){
+            reset;
+        }
+    }, [isSubmitSuccessful, reset]);
     
     return (
         <>
             <div className="header">
-                <h3>New Task</h3>
+                
             </div>
-            <form className="new-task-form">   
-                <div className="content">
-                    <label htmlFor="title">
-                        Task Name
-                        <br />
-                        <input 
+            <div className="container">
+                <form className="new-task-form">   
+                    <h1>New Task</h1>
+                    <div className="content">
+                        <InputLabel htmlFor="title">
+                            Task Name
+                        </InputLabel>
+                        <TextField 
                             type="text" 
-                            id="title" 
-                            value={title} 
+                            id="title"
+                            className="form-control"
+                            name="title"
                             placeholder="Add new task"
-                            onChange={e => setTitle(e.target.value)}
+                            {...register("taskName", {required:"Title is required"})}
                         />
-                    </label>
-                    <br />
+                        <p className="errors">{errors.taskName?.message}</p>
 
-                    <label htmlFor="due-date">
-                        Due Date
-                        <br />
-                        <input 
-                            type="date" 
-                            name="dueDate"
-                            id="due-date"
-                            value={dueDate}
-                            onChange={e => setDueDate(e.target.value)}
-                        />
-                    </label>
-                    <br />
+                        <InputLabel htmlFor="due-date">
+                            Due Date
+                        </InputLabel>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Controller
+                                name="dueDate"
+                                control={control}
+                                render={({ field: { onChange}  }) => (
+                                    <DatePicker
+                                        id="due-date"
+                                        className="form-control date-picker"
+                                        onChange={onChange}
+                                    />
+                                )}
+                            />
+                        </LocalizationProvider>
 
-                    <label htmlFor="category">
-                        Category
-                        <br />
-                        <select id="category" value={category} onChange={e => setCategory(e.target.value)}>
-                            {categoryList.map(item =>(
-                                <option key={item._id} value={item.title}>{item.title}</option>
-                            ))}
-                        </select>   
-                        <Link to="/new-category"><button>New Category</button></Link>
-                    </label>
-                    <br />
+                        <InputLabel htmlFor="category">
+                            Category
+                        </InputLabel>
+                        <div className="new-task-form-select-btn">
+                            <Controller
+                                    name="category"
+                                    control={control}
+                                    render={({ field: { onChange, value}  }) => (
+                                        <Select id="category" name="category" className="form-control" onChange={onChange} value={value}>
+                                            <MenuItem value=""><em>Select</em></MenuItem>
+                                            {categoryList.map(item =>(
+                                                <MenuItem id="menu-item" key={item._id} value={item.title}>{item.title}</MenuItem>
+                                            ))}
+                                        </Select>  
+                                    )}
+                                /> 
+                            <Link to="/new-category"><Button variant="contained">New Category</Button></Link>
+                        </div>
 
-                    <label htmlFor="priority">
-                        Priority
-                        <br />
-                        <select id="priority" value={priority} onChange={e => setPriority(e.target.value)}>
-                            {priorityList.map((item, index) => (
-                                <option key={index} value={item} onChange={e => setPriority(e.target.value)}>{item}</option>
-                            ))}
-                        </select> 
-                    </label>
-                    <br />
+                        <InputLabel htmlFor="priority">
+                            Priority
+                        </InputLabel>                            
+                        <Controller
+                            name="priority"
+                            control={control}
+                            render={({ field: { onChange, value}  }) => (
+                                <Select id="priority" name="priority" className="form-control" onChange={onChange} value={value}>
+                                    <MenuItem value=""><em>Select</em></MenuItem>
+                                    {priorityList.map((item, index) => (
+                                        <MenuItem id="menu-item" key={index} value={item}>{item}</MenuItem>
+                                    ))}
+                                </Select>  
+                            )}
+                        />                        
 
-                    <label htmlFor="description">
-                        Description
-                        <br />
-                        <textarea 
+                        <InputLabel htmlFor="description">
+                            Description
+                        </InputLabel>
+                        <TextField
                             name="description" 
                             id="description" 
-                            value={description} 
-                            cols="30" rows="10"
+                            className="form-control"
                             placeholder="Add your description..."
-                            onChange={e => setDescription(e.target.value)}
-                        ></textarea>
-                    </label>
-                    <br />
-                </div>
-                <div className="form-submit">
-                    <button onClick={handleClear}>Clear</button>
-                    <button onClick={handleSubmit}>Add</button>
-                </div>
-            </form>
+                            {...register("description")}
+                            multiline
+                            minRows={3}
+                        />
+                    </div>
+                    <div className="form-btn">
+                        <Button variant="contained" onClick={handleClear}>Clear</Button>
+                        <Button variant="contained" onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>Add</Button>
+                    </div>
+                </form>
+            </div>
         </>
     )
 }
