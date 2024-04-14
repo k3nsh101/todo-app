@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-
+import { InputLabel, TextField, Button } from "@mui/material"
 
 import addCategory from "./addCategory";
 
@@ -27,7 +27,11 @@ export default function CategoryForm() {
         const category = getValues("title");
         const description = getValues("description");
         const res = await addCategory(category, description);
-        if (res.ok){
+
+        if (res.data.message === "Category already exists"){
+            alert("Category already exists")
+        }
+        else if (res.statusText === "Created"){
             alert("Category added successfully.");
             navigate("/")
         }
@@ -47,40 +51,46 @@ export default function CategoryForm() {
     return (
         <>
             <div className="header">
-                <h1>Add Category</h1>
+                
             </div>
-            <form className="new-category-form" onSubmit={handleSubmit(onSubmit)} noValidate>  
-                <div className="content">
-                    <label htmlFor="title">
-                        Category Title
-                    </label>
-                    <input
-                            type="text" 
-                            id="title" 
-                            placeholder="Add new category"
-                            {...register("title", {required:"Title is required"})}                            
-                        />
-                    <p className="errors">{errors.title?.message}</p>
+            <div className="container">
+                <form className="new-category-form" noValidate>  
+                    <h1>Add Category</h1>
+                    <div className="content">
+                        <InputLabel htmlFor="title" className="label">
+                            Category Title
+                        </InputLabel>
+                        <TextField
+                                id="title" 
+                                className="form-control"
+                                placeholder="Add new category"
+                                {...register("title", {required:"Title is required"})}               
+                            />
+                        <p className="errors">{errors.title?.message}</p>
 
-                    <label htmlFor="description">
-                        Description
-                    </label>
-                    <textarea
-                            name="description" 
-                            id="description" 
-                            cols="30" rows="10"
-                            placeholder="Add your description..."
-                            {...register("description")}
-                            minRows={3}
-                            
-                        ></textarea>
-                </div> 
-                <div className="form-submit">
-                    <button onClick={handleClear}>Clear</button>
-                    <button disabled={isSubmitting}>Add</button>
-                    <Link to="/new-task"><button>Back</button></Link>
-                </div>
-            </form>                
+                        <InputLabel htmlFor="description" className="label">
+                            Description
+                        </InputLabel>
+                        <div className="textfield-button-container">
+
+                        </div>
+                        <TextField
+                                name="description" 
+                                id="description" 
+                                className="form-control"
+                                placeholder="Add your description..."
+                                {...register("description")}
+                                multiline
+                                minRows={3}
+                            />
+                    </div> 
+                    <div className="form-submit">
+                        <Button variant="contained" onClick={handleClear}>Clear</Button>
+                        <Button variant="contained" onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>Add</Button>
+                        <Link to="/new-task"><Button variant="contained">Back</Button></Link>
+                    </div>
+                </form>  
+            </div>              
         </>
     )
 }
