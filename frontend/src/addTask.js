@@ -1,20 +1,17 @@
-const addTask = async function(title, dueDate, category, priority, description) {
-    const res = fetch(
+import axios from "axios";
+
+const addTask = async function(formData) {
+    const {taskName, dueDate, category, priority, description} = formData;
+    
+    const res = await axios.post(
         "http://localhost:3000/tasks",
         {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                title,
-                dueDate,
-                category,
-                priority,
-                description,
-            })
-        }
-    );
+            title: taskName,
+            dueDate,
+            category,
+            priority,
+            description,
+        });
     return res;
 }
 
