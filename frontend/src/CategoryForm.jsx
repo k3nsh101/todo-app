@@ -5,8 +5,6 @@ import { InputLabel, TextField, Button } from "@mui/material"
 
 import addCategory from "./addCategory";
 
-import "./CategoryForm.css"
-
 // Add server side validation to duplicate categories with same title,
 // add isSubmitSuccessful and validation in the frontend
 
@@ -84,7 +82,7 @@ export default function CategoryForm() {
                                 minRows={3}
                             />
                     </div> 
-                    <div className="form-submit">
+                    <div className="form-btn">
                         <Button variant="contained" onClick={handleClear}>Clear</Button>
                         <Button variant="contained" onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>Add</Button>
                         <Link to="/new-task"><Button variant="contained">Back</Button></Link>
