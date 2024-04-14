@@ -11,12 +11,20 @@ exports.category_item = async function(req, res) {
 };
 
 exports.new_category = async function(req, res) {
+    let title = req.body.title.toLowerCase();
+    title = title[0].toUpperCase() + title.slice(1);
+
+    const isPresent = await categories.find({'title': title}, "_id title description").exec();
+    if (isPresent.length > 0) {
+        return res.send({"message": "Category already exists"});
+    }
+
     const category = new categories({
-        'title': req.body.title, 'description': req.body.description
+        'title': title, 'description': req.body.description
     });
 
     await category.save();
-    res.send(category);
+    res.sendStatus(201);
 }
 
 exports.update_category = async function(req, res) {
