@@ -11,7 +11,10 @@ exports.tasks_list = async function(req, res) {
 };
 
 exports.get_task = async function(req, res) {
-    const task = await tasks.findById(req.params.taskid);
+    const task = await tasks.findById(req.params.taskid).populate({
+        path: "categoryID",
+        select: "title description"
+    });
     res.send(task);
 }
 
@@ -43,7 +46,8 @@ exports.create_task = async function(req, res) {
 
 exports.task_update = async function(req, res) {
     const id = req.params.taskid;
-    const categoryID = await categories.findOne({'title': req.body.category}, "_id")
+    const categoryID = await categories.findOne({'title': req.body.category}, "_id").exec();
+
     try {
         const task = await tasks.findByIdAndUpdate(id, {
             title: req.body.title,
@@ -51,7 +55,7 @@ exports.task_update = async function(req, res) {
             dueDate: req.body.dueDate,
             priority: req.body.priority,
             status: req.body.status,
-            categoryid: categoryID,
+            categoryID: categoryID,
             updatedAt: new Date() 
         }, { new:true });
 
@@ -63,6 +67,7 @@ exports.task_update = async function(req, res) {
             res.send(task)
         }
     } catch (e) {
+        console.log(e)
         res.sendStatus(400);
     }
 };
