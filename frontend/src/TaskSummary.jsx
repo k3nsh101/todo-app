@@ -2,21 +2,20 @@ import { useState } from "react";
 
 import dayjs from "dayjs";
 
-import { List, ListItemButton, ListItemText, ListItemIcon} from "@mui/material";
+import { List, ListItemButton, ListItemText, ListItemIcon, IconButton} from "@mui/material";
 import Checkbox from '@mui/material/Checkbox';
 import ListItem from '@mui/material/ListItem';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { currentTaskContext } from "./currentTaskContext";
 import Popup from "./Popup";
 import TaskDetails from "./TaskDetails";
 import getTasks from "./useTasksList";
+import deleteTask from "./deleteTask";
 import "./home.css";
 
 export default function TaskSummary() {
-    let tasks_list = getTasks();
-    tasks_list = tasks_list.map((task, index) => {
-        return {...task, index}
-    });
+    const tasks_list = getTasks();
 
     const [openPopup, setOpenPopup] = useState(false);
     const [taskId, setTaskId] = useState("");
@@ -45,6 +44,14 @@ export default function TaskSummary() {
         });
         setOpenPopup(true);
     };
+
+    const handleDeleteClick = async (task_id) => {
+        const res = await deleteTask(task_id);
+        if (res.statusText === "OK"){
+            alert("Task deleted successfully");
+            window.location.reload();
+        }    
+    }
 
     const handleClose = () => {
         setTaskId(prevState => {
@@ -86,6 +93,9 @@ export default function TaskSummary() {
                                 <ListItemButton id={id} role={undefined} onClick={() => handleTaskClick(id)} dense>
                                     <ListItemText primary={title} secondary={dueDate} />
                                 </ListItemButton>
+                                <IconButton size="large" onClick={() => handleDeleteClick(id)}>
+                                    <DeleteIcon />
+                                </IconButton>
                             </ListItem>
                         );
                     })}
