@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { InputLabel, TextField, Button, Select, MenuItem, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
@@ -9,10 +9,24 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
+import dayjs from "dayjs";
+
 import useCategoryList from "./useCategoryList";
-// import addTask from "./addTask";
+import useTask from "./useTask";
+import updateTask from "./updateTask";
+
 
 const TaskForm = () => {
+    const { taskId } = useParams();
+    const taskData = useTask(taskId);
+    if (!taskData.categoryID){
+        taskData.categoryID = {
+            title: ""
+        }
+    }
+
+    // category = categoryList.find((item) => item.title === taskData.categoryID.title).title;
+
     const navigate = useNavigate();
 
     const categoryList = useCategoryList();
@@ -22,34 +36,56 @@ const TaskForm = () => {
     const form = useForm({
         defaultValues: {
             taskName: "",
-            dueDate: "",
             category: "",
             priority: "",
-            description: ""
+            description: "",
+            status: "Pending",
         },
         mode: "onTouched"
     });
 
-    const { register, getValues, handleSubmit, formState, reset, control } = form;
+    const { register, getValues, setValue, handleSubmit, formState, reset, control } = form;
     const { errors, isSubmitting, isSubmitSuccessful } = formState;
 
+    // MUI expects the same values as in the array which is used to populate the Select component
+    const category = categoryList.find((item) => item.title === taskData.categoryID.title)
+    const categoryTitle = category ? category.title: ""
 
-    // const onSubmit = async () => {
-    //     const formData = {
-    //         taskName: getValues("taskName"),
-    //         dueDate: getValues("dueDate"),
-    //         category: getValues("category"),
-    //         priority: getValues("priority"),
-    //         description: getValues("description")
-    //     }
+    useEffect(() => {
+        if (taskData.title) {
+            setValue("taskName", taskData.title);
+            setValue("category", categoryTitle);
+            
+            if (taskData.dueDate) {
+                setValue("dueDate", dayjs(taskData.dueDate));
+            }
 
-    //     const res = await addTask(formData);
-    //     if (res.statusText === "Created"){
-    //         // route to homepage
-    //         alert("Task added successfully");
-    //         navigate("/")
-    //     }
-    // };
+            setValue("priority", taskData.priority);
+            setValue("status", taskData.status);
+            setValue("description", taskData.description);
+        }
+    }, [categoryTitle, setValue, taskData.description, taskData.dueDate, taskData.priority, taskData.status, taskData.title]);
+
+
+    const onSubmit = async () => {
+        const formData = {
+            taskId,
+            taskName: getValues("taskName"),
+            dueDate: getValues("dueDate"),
+            category: getValues("category"),
+            priority: getValues("priority"),
+            status: getValues("status"),
+            description: getValues("description")
+        }
+
+        const res = await updateTask(formData);
+        
+        if (res.statusText === "OK"){
+            // route to homepage
+            alert("Task updated successfully");
+            navigate("/")
+        }
+    };
 
     const handleClear = (event) => {
         event.preventDefault();
@@ -79,11 +115,10 @@ const TaskForm = () => {
                             Task Name
                         </InputLabel>
                         <TextField 
-                            type="text" 
                             id="title"
                             className="form-control"
                             name="title"
-                            placeholder="Add new task"
+                            placeholder="Update task name"
                             {...register("taskName", {required:"Title is required"})}
                         />
                         <p className="errors">{errors.taskName?.message}</p>
@@ -95,10 +130,11 @@ const TaskForm = () => {
                             <Controller
                                 name="dueDate"
                                 control={control}
-                                render={({ field: { onChange}  }) => (
+                                render={({ field: { onChange, value }  }) => (
                                     <DatePicker
                                         id="due-date"
                                         className="form-control date-picker"
+                                        value={value}
                                         onChange={onChange}
                                     />
                                 )}
@@ -163,7 +199,7 @@ const TaskForm = () => {
                             name="description" 
                             id="description" 
                             className="form-control"
-                            placeholder="Add your description..."
+                            placeholder="Update your description..."
                             {...register("description")}
                             multiline
                             minRows={3}
@@ -171,7 +207,7 @@ const TaskForm = () => {
                     </div>
                     <div className="form-btn">
                         <Button variant="contained" onClick={handleClear}>Clear</Button>
-                        <Button variant="contained" disabled={isSubmitting}>Add</Button>
+                        <Button variant="contained" onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>Add</Button>
                     </div>
                 </form>
             </div>
