@@ -1,0 +1,7 @@
+.task-container {
+    padding: 10px 20px;
+}
+
+.task-container .task-item-right {
+    text-align: right;
+}

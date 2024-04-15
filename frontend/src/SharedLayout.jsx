@@ -1,6 +1,7 @@
 // navigation bar
-import { Box} from "@mui/material";
 import { Link, Outlet } from "react-router-dom";
+import { Box} from "@mui/material";
+
 import logo from "/logo.webp";
 
 export default function SharedLayout() {

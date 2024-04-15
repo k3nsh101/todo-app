@@ -30,15 +30,15 @@ const router = createBrowserRouter([
         element: <CategoryForm />,
       },
       {
-        path: "/update-task",
+        path: "/update-task/:taskId",
         element: <UpdateTaskForm />,
+      },
+      {
+        path: "*",
+        element: <Error />
       }
     ]
   },
-  {
-    path: "*",
-    element: <Error />
-  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
