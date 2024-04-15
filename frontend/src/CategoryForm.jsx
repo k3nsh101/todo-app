@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { InputLabel, TextField, Button } from "@mui/material"
+
+import { InputLabel, TextField, Button, IconButton } from "@mui/material"
+import CloseIcon from '@mui/icons-material/Close';
 
 import addCategory from "./addCategory";
 
@@ -48,12 +50,16 @@ export default function CategoryForm() {
 
     return (
         <>
-            <div className="header">
-                
-            </div>
-            <div className="container">
+            <div className="form-container">
                 <form className="new-category-form" noValidate>  
-                    <h1>Add Category</h1>
+                <   div className="header">
+                        <h1>New Category</h1>
+                        <Link to="/new-task" >
+                            <IconButton className="icon" aria-label="close" color="secondary">
+                                <CloseIcon />
+                            </IconButton>
+                        </Link>
+                    </div>
                     <div className="content">
                         <InputLabel htmlFor="title" className="label">
                             Category Title
@@ -85,7 +91,6 @@ export default function CategoryForm() {
                     <div className="form-btn">
                         <Button variant="contained" onClick={handleClear}>Clear</Button>
                         <Button variant="contained" onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>Add</Button>
-                        <Link to="/new-task"><Button variant="contained">Back</Button></Link>
                     </div>
                 </form>  
             </div>              

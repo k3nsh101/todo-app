@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { InputLabel, TextField, Button, Select, MenuItem } from "@mui/material"
+import { InputLabel, TextField, Button, Select, MenuItem, IconButton } from "@mui/material"
+import CloseIcon from '@mui/icons-material/Close';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -61,12 +62,16 @@ const TaskForm = () => {
     
     return (
         <>
-            <div className="header">
-                
-            </div>
-            <div className="container">
+            <div className="form-container">
                 <form className="new-task-form">   
-                    <h1>New Task</h1>
+                    <div className="header">
+                        <h1>New Task</h1>
+                        <Link to="/" >
+                            <IconButton className="icon" aria-label="close" color="secondary">
+                                <CloseIcon />
+                            </IconButton>
+                        </Link>
+                    </div>
                     <div className="content">
                         <InputLabel htmlFor="title">
                             Task Name
