@@ -7,7 +7,7 @@ exports.tasks_list = async function(req, res) {
         "title dueDate priority")
         .exec();
 
-    res.render('tasks', { tasks_list: allTasks});
+    res.send(allTasks);
 };
 
 exports.get_task = async function(req, res) {
