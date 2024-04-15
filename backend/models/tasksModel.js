@@ -16,7 +16,7 @@ const tasksSchema = new Schema({
         enum: ['Pending', 'Completed'],
         default: 'Pending',
     },
-    categoryID: { type: Schema.Types.ObjectId, ref: 'Category' },
+    categoryID: { type: Schema.Types.ObjectId, ref: 'categories' },
     createdAt: { type: Date, default: new Date()},
     updatedAt: Date,
 }, {versionKey: false});
