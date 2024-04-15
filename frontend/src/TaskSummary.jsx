@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 
 import dayjs from "dayjs";
 
@@ -7,6 +6,7 @@ import { List, ListItemButton, ListItemText, ListItemIcon} from "@mui/material";
 import Checkbox from '@mui/material/Checkbox';
 import ListItem from '@mui/material/ListItem';
 
+import { currentTaskContext } from "./currentTaskContext";
 import Popup from "./Popup";
 import TaskDetails from "./TaskDetails";
 import getTasks from "./useTasksList";
@@ -37,57 +37,68 @@ export default function TaskSummary() {
     };
 
     const handleTaskClick = (task_id) => {
-        setTaskId(task_id);
+        setTaskId(prevState => {
+            return {
+                ...prevState,
+                taskId: task_id
+            }
+        });
         setOpenPopup(true);
-
     };
 
     const handleClose = () => {
+        setTaskId(prevState => {
+            return {
+                ...prevState,
+                taskId: ""
+            }
+        });
         setOpenPopup(false);
-
     };
 
     return (
         <>
-            <div className="tasks-container">
-                <List sx={{ width: '100%', maxWidth: 500, bgcolor: 'background.paper' }}>
-                {tasks_list.map((task) => {
-                    const id = task._id;
-                    const title = task.title;
-                    const dueDate = dayjs(task.dueDate).format("MMM DD");
+            <currentTaskContext.Provider value={{taskId, setTaskId}}>
+                <div className="tasks-container">
+                    <List sx={{ width: '100%', maxWidth: 500, bgcolor: 'background.paper' }}>
+                    {tasks_list.map((task) => {
+                        const id = task._id;
+                        const title = task.title;
+                        const dueDate = task.dueDate ? dayjs(task.dueDate).format("MMM DD") : "Not Specified";                        
 
-                    return (
-                        
-                        <ListItem
-                            key={id}
-                            // secondaryAction={
-                            //     <IconButton edge="end" aria-label="comments">
-                            //         <CommentIcon />
-                            //     </IconButton>
-                            // }
-                            disablePadding
-                            >
-                            <ListItemIcon>
-                                <Checkbox
-                                    onChange={handleToggle}
-                                    inputProps={{ 'aria-labelledby': id }}
-                                />
-                            </ListItemIcon>
-                            <ListItemButton id={id} role={undefined} onClick={() => handleTaskClick(id)} dense>
-                                <ListItemText primary={title} secondary={dueDate} />
-                            </ListItemButton>
-                        </ListItem>
-                    );
-                })}
-                </List>
-                <Popup
-                    openPopup={openPopup}
-                    setOpen={setOpenPopup}
-                    closePopup={handleClose}
-                >
-                    <TaskDetails taskId={taskId}/>
-                </Popup>
-            </div>
+                        return (
+                            
+                            <ListItem
+                                key={id}
+                                // secondaryAction={
+                                //     <IconButton edge="end" aria-label="comments">
+                                //         <CommentIcon />
+                                //     </IconButton>
+                                // }
+                                disablePadding
+                                >
+                                <ListItemIcon>
+                                    <Checkbox
+                                        onChange={handleToggle}
+                                        inputProps={{ 'aria-labelledby': id }}
+                                    />
+                                </ListItemIcon>
+                                <ListItemButton id={id} role={undefined} onClick={() => handleTaskClick(id)} dense>
+                                    <ListItemText primary={title} secondary={dueDate} />
+                                </ListItemButton>
+                            </ListItem>
+                        );
+                    })}
+                    </List>
+                    <Popup
+                        openPopup={openPopup}
+                        setOpen={setOpenPopup}
+                        closePopup={handleClose}
+                    >
+                        <TaskDetails />
+                    </Popup>
+                </div>
+            </currentTaskContext.Provider>
         </>
     )
 }
