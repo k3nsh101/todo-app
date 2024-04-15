@@ -1,0 +1,26 @@
+.tasks-container {
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.MuiListItemText-primary {
+    font-size: 16px !important;
+}
+
+.home-search-btn {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-search-btn Button {
+    font-size: 16px;
+    height: 56px;
+    width: 140px;
+}
+
+.home-search-btn .search-bar {
+    width: 350px;
+}
