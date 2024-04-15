@@ -2,18 +2,25 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+import SharedLayout from './SharedLayout.jsx';
 import Home from './Home.jsx';
 import TaskForm from './TaskForm.jsx'
 import CategoryForm from './CategoryForm.jsx';
+import UpdateTaskForm from "./UpdateTaskForm.jsx";
 import Error from './Error.jsx';
 
-// import './index.css'
+import "./form.css";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <SharedLayout />,
     children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
       {
         path: "/new-task",
         element: <TaskForm />,
@@ -22,6 +29,10 @@ const router = createBrowserRouter([
         path: "/new-category",
         element: <CategoryForm />,
       },
+      {
+        path: "/update-task",
+        element: <UpdateTaskForm />,
+      }
     ]
   },
   {
