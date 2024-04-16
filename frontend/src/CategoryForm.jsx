@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
-import { InputLabel, TextField, Button, IconButton } from "@mui/material"
+import { InputLabel, TextField, Button, IconButton, Snackbar, Alert } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close';
 
 import addCategory from "./addCategory";
@@ -22,6 +22,12 @@ export default function CategoryForm() {
     const { register, getValues, handleSubmit, formState, reset } = form;
     const { errors, isSubmitting, isSubmitSuccessful } = formState;
 
+    const [alert, setAlert] = useState({
+        open: false,
+        content: "",
+        severity: ""
+    });
+
     const onSubmit = async () => {
         // Add a post request to /category endpoint
         const category = getValues("title");
@@ -29,13 +35,29 @@ export default function CategoryForm() {
         const res = await addCategory(category, description);
 
         if (res.data.message === "Category already exists"){
-            alert("Category already exists")
+            setAlert({
+                open: true,
+                severity: "warning",
+                content: "Category already exists"
+            })            
         }
         else if (res.statusText === "Created"){
-            alert("Category added successfully.");
-            navigate("/")
+            setAlert({
+                open: true,
+                severity: "success",
+                content: "Category added successfully."
+            })
+            setTimeout(() => navigate("/") , 2500);
         }
     };
+
+    const handleAlertClose = () => {
+        setAlert({
+            open: false,
+            severity: "",
+            content: ""
+        })
+    }
 
     const handleClear = (event) => {
         event.preventDefault();
@@ -93,6 +115,9 @@ export default function CategoryForm() {
                         <Button variant="contained" onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>Add</Button>
                     </div>
                 </form>  
+                {alert ? <Snackbar open={alert.open} onClose={handleAlertClose} autoHideDuration={2000} anchorOrigin={{vertical:"top", horizontal:"center"}}>
+                    <Alert severity={alert.severity}>{alert.content}</Alert>
+                </Snackbar> : <></>}
             </div>              
         </>
     )

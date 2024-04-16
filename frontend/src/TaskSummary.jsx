@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import dayjs from "dayjs";
 
-import { List, ListItemButton, ListItemText, ListItemIcon, IconButton} from "@mui/material";
+import { List, ListItemButton, ListItemText, ListItemIcon, IconButton, Alert} from "@mui/material";
 import Checkbox from '@mui/material/Checkbox';
 import ListItem from '@mui/material/ListItem';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,6 +19,9 @@ export default function TaskSummary() {
 
     const [openPopup, setOpenPopup] = useState(false);
     const [taskId, setTaskId] = useState("");
+
+    const [alert, setAlert] = useState(false);
+    const [alertContent, setAlertContent] = useState("");
 
     const [checked, setChecked] = useState([0]);
 
@@ -48,9 +51,16 @@ export default function TaskSummary() {
     const handleDeleteClick = async (task_id) => {
         const res = await deleteTask(task_id);
         if (res.statusText === "OK"){
-            alert("Task deleted successfully");
-            window.location.reload();
+            setAlertContent("Task deleted successfully");
+            setAlert(true);
+            setTimeout(handleAlertClose, 2000);
         }    
+    }
+
+    const handleAlertClose = () => {
+        setAlertContent("");
+        setAlert(false);
+        window.location.reload();
     }
 
     const handleClose = () => {
@@ -107,6 +117,7 @@ export default function TaskSummary() {
                     >
                         <TaskDetails />
                     </Popup>
+                    {alert ? <Alert severity="success" onClose={handleAlertClose}>{alertContent}</Alert> : <></>}
                 </div>
             </currentTaskContext.Provider>
         </>

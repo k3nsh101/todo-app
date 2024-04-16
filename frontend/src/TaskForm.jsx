@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { InputLabel, TextField, Button, Select, MenuItem, IconButton } from "@mui/material"
+import { InputLabel, TextField, Button, Select, MenuItem, IconButton, Snackbar, Alert } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -28,6 +28,12 @@ const TaskForm = () => {
         mode: "onTouched"
     });
 
+    const [alert, setAlert] = useState({
+        open: false,
+        content: "",
+        severity: ""
+    });
+
     const { register, getValues, handleSubmit, formState, reset, control } = form;
     const { errors, isSubmitting, isSubmitSuccessful } = formState;
 
@@ -44,10 +50,22 @@ const TaskForm = () => {
         const res = await addTask(formData);
         if (res.statusText === "Created"){
             // route to homepage
-            alert("Task added successfully");
-            navigate("/")
+            setAlert({
+                open: true,
+                severity: "success",
+                content: "Task added successfully."
+            })
+            setTimeout(() => navigate("/") , 2500);
         }
     };
+
+    const handleAlertClose = () => {
+        setAlert({
+            open: false,
+            severity: "",
+            content: ""
+        })
+    }
 
     const handleClear = (event) => {
         event.preventDefault();
@@ -156,6 +174,9 @@ const TaskForm = () => {
                         <Button variant="contained" onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>Add</Button>
                     </div>
                 </form>
+                {alert ? <Snackbar open={alert.open} onClose={handleAlertClose} autoHideDuration={2000} anchorOrigin={{vertical:"top", horizontal:"center"}}>
+                    <Alert severity={alert.severity}>{alert.content}</Alert>
+                </Snackbar> : <></>}
             </div>
         </>
     )
