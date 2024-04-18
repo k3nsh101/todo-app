@@ -5,8 +5,7 @@ export default async function checkTask(taskId){
         `http://localhost:3000/tasks/${taskId}`,
         {
             status: "Completed",
-        }
-    
+        },
     );
 
     return res;
