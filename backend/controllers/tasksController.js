@@ -46,7 +46,10 @@ exports.create_task = async function(req, res) {
 
 exports.task_update = async function(req, res) {
     const id = req.params.taskid;
-    const categoryID = await categories.findOne({'title': req.body.category}, "_id").exec();
+    let categoryID = undefined;
+    if (req.body.category){
+        categoryID = await categories.findOne({'title': req.body.category}, "_id").exec();
+    }
 
     try {
         const task = await tasks.findByIdAndUpdate(id, {
