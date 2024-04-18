@@ -9,9 +9,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { currentTaskContext } from "./currentTaskContext";
 import Popup from "./Popup";
+
 import TaskDetails from "./TaskDetails";
 import getTasks from "./useTasksList";
 import deleteTask from "./deleteTask";
+import checkTask from "./checkTask";
+
 import "./home.css";
 
 export default function TaskSummary() {
@@ -23,20 +26,17 @@ export default function TaskSummary() {
     const [alert, setAlert] = useState(false);
     const [alertContent, setAlertContent] = useState("");
 
-    const [checked, setChecked] = useState([0]);
+    const [checked, setChecked] = useState(false);
 
-    const handleToggle = (value) => () => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
+    const handleChange = async (event, id) => {
+        setChecked(event.target.checked);
+        const res = await checkTask(id);
+        if (res.statusText === "OK"){
+            setAlertContent("Task completed");
+            setAlert(true);
+            setTimeout(handleAlertClose, 1000);
         }
-
-        setChecked(newChecked);
-    };
+    }
 
     const handleTaskClick = (task_id) => {
         setTaskId(prevState => {
@@ -96,8 +96,9 @@ export default function TaskSummary() {
                                 >
                                 <ListItemIcon>
                                     <Checkbox
-                                        onChange={handleToggle}
-                                        inputProps={{ 'aria-labelledby': id }}
+                                        checked={checked}
+                                        onChange={(event) => handleChange(event, id)}
+
                                     />
                                 </ListItemIcon>
                                 <ListItemButton id={id} role={undefined} onClick={() => handleTaskClick(id)} dense>
