@@ -207,7 +207,7 @@ const TaskForm = () => {
                     </div>
                     <div className="form-btn">
                         <Button variant="contained" onClick={handleClear}>Clear</Button>
-                        <Button variant="contained" onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>Add</Button>
+                        <Button variant="contained" onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>Update</Button>
                     </div>
                 </form>
             </div>
