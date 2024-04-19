@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-import { InputLabel, TextField, Button, Select, MenuItem, IconButton } from "@mui/material";
+import { InputLabel, TextField, Button, Select, MenuItem, IconButton, Snackbar, Alert } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -44,6 +44,12 @@ const TaskForm = () => {
         mode: "onTouched"
     });
 
+    const [alert, setAlert] = useState({
+        open: false,
+        content: "",
+        severity: ""
+    });
+
     const { register, getValues, setValue, handleSubmit, formState, reset, control } = form;
     const { errors, isSubmitting, isSubmitSuccessful } = formState;
 
@@ -82,10 +88,22 @@ const TaskForm = () => {
         
         if (res.statusText === "OK"){
             // route to homepage
-            alert("Task updated successfully");
-            navigate("/")
+            setAlert({
+                open: true,
+                severity: "success",
+                content: "Task updated successfully."
+            })
+            setTimeout(() => navigate("/") , 2500);
         }
     };
+
+    const handleAlertClose = () => {
+        setAlert({
+            open: false,
+            severity: "",
+            content: ""
+        })
+    }
 
     const handleClear = (event) => {
         event.preventDefault();
@@ -211,6 +229,9 @@ const TaskForm = () => {
                     </div>
                 </form>
             </div>
+            {alert ? <Snackbar open={alert.open} onClose={handleAlertClose} autoHideDuration={2000} anchorOrigin={{vertical:"top", horizontal:"center"}}>
+                    <Alert severity={alert.severity}>{alert.content}</Alert>
+                </Snackbar> : <></>}
         </>
     )
 }
