@@ -4,6 +4,7 @@ const { DateTime, Zone } = require('luxon');
 const Schema = mongoose.Schema;
 
 const tasksSchema = new Schema({
+    userID: { type: Schema.Types.ObjectId, required: true, ref: 'users' },
     title: { type:String, required: true },
     description: String,
     dueDate: Date,
