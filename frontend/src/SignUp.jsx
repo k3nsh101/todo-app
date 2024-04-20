@@ -44,7 +44,10 @@ export default function Login() {
                     severity: "success",
                     content: "Successfully registered."
                 })
-                setTimeout(() => navigate("/") , 2500);
+                setTimeout(() => navigate("/login") , 2500);
+            }
+            else {
+                console.log(res);
             }
         }
         catch (err) {
