@@ -13,6 +13,7 @@ const mongoDB = process.env.DATABASE_URL;
 const tasksRouter = require('./routes/tasks');
 const indexRouter = require('./routes/index');
 const categoryRouter = require('./routes/category');
+const userRouter = require('./routes/users');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(cors());
 app.use('/', indexRouter);
 app.use('/tasks', tasksRouter);
 app.use('/category', categoryRouter);
+app.use('/users', userRouter);
 
 app.listen(port, function() {
     console.log(`App listening on the port http://localhost:${port}/`);
