@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { TextField, Stack, Button, IconButton, Avatar, Box, Typography } from "@mui/material";
 import FormControl from '@mui/material/FormControl';
@@ -10,15 +10,30 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
+import authenticateUser from "./authenticateUser";
+
 export default function Login() {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        const data = new FormData(event.currentTarget);
 
-        console.log("handle")
+        try {
+            const res = await authenticateUser(
+                data.get("username"),
+                data.get("password")
+            )
+    
+            if (res.status == 200){
+                navigate("/");
+            }
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return(
@@ -49,11 +64,12 @@ export default function Login() {
                 <Typography variant="h5">
                     Sign In
                 </Typography>
-                <TextField fullWidth required label="Username" id="username" />
+                <TextField fullWidth required label="Username" id="username" name="username" />
                 <FormControl variant="outlined" fullWidth>
                     <InputLabel required htmlFor="password">Password</InputLabel>
                     <OutlinedInput
                         id="password"
+                        name="password"
                         type={showPassword ? 'text' : 'password'}
                         endAdornment={
                         <InputAdornment position="end">
