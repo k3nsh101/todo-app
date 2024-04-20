@@ -7,7 +7,9 @@ import Home from './Home.jsx';
 import TaskForm from './TaskForm.jsx'
 import CategoryForm from './CategoryForm.jsx';
 import UpdateTaskForm from "./UpdateTaskForm.jsx";
+import SignUp from "./SignUp.jsx";
 import Error from './Error.jsx';
+import Login from './SignIn.jsx'
 
 import "./form.css";
 import "./index.css";
@@ -39,6 +41,14 @@ const router = createBrowserRouter([
       }
     ]
   },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <SignUp />,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
