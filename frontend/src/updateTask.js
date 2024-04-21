@@ -1,4 +1,5 @@
 import axios from "axios";
+axios.defaults.withCredentials = true;
 
 export default async function updateTask(formData) {
     const {taskId, taskName, dueDate, category, priority, status, description} = formData;

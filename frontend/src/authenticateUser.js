@@ -16,7 +16,5 @@ export default async function authenticateUser(username, password) {
     }
     catch (err) {
         console.log(err);
-    }  
-
-
+    }
 }

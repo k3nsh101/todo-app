@@ -1,4 +1,5 @@
 import axios from "axios";
+axios.defaults.withCredentials = true;
 
 const addTask = async function(formData) {
     const {taskName, dueDate, category, priority, description} = formData;

@@ -1,6 +1,9 @@
 // Get the available categories
 import { useState, useEffect } from "react";
 
+import axios from "axios";
+axios.defaults.withCredentials = true;
+
 export default function useCategoryList() {
     const [categoryList, setCategoryList] = useState([]);
 
@@ -8,13 +11,11 @@ export default function useCategoryList() {
         getCategoryList();
 
         async function getCategoryList() {
-            const res = await fetch(
+            const res = await axios.get(
                 "http://localhost:3000/category",
             );
-            
-            const categories = await res.json();
     
-            setCategoryList(categories);
+            setCategoryList(res.data);
         }
     }, []);
     return categoryList;

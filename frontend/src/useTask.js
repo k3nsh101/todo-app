@@ -1,6 +1,8 @@
 // Get the specific task
 
 import axios from "axios";
+axios.defaults.withCredentials = true;
+
 import { useState, useEffect } from "react";
 
 export default function useTask(taskId) {
