@@ -7,7 +7,7 @@ import Checkbox from '@mui/material/Checkbox';
 import ListItem from '@mui/material/ListItem';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { currentTaskContext } from "./currentTaskContext";
+import { TaskContext } from "./Context";
 import Popup from "./Popup";
 
 import TaskDetails from "./TaskDetails";
@@ -75,7 +75,7 @@ export default function TaskSummary() {
 
     return (
         <>
-            <currentTaskContext.Provider value={{taskId, setTaskId}}>
+            <TaskContext.Provider value={{taskId, setTaskId}}>
                 <div className="tasks-container">
                     <List sx={{ width: '100%', maxWidth: 500, bgcolor: 'background.paper' }}>
                     {tasks_list.map((task) => {
@@ -120,7 +120,7 @@ export default function TaskSummary() {
                     </Popup>
                     {alert ? <Alert severity="success" onClose={handleAlertClose}>{alertContent}</Alert> : <></>}
                 </div>
-            </currentTaskContext.Provider>
+            </TaskContext.Provider>
         </>
     )
 }

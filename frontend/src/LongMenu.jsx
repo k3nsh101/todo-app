@@ -6,10 +6,10 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-import { currentTaskContext } from "./currentTaskContext";
+import { TaskContext } from "./Context";
 
 export default function LongMenu({options}) {
-    const { taskId, setTaskId} = useContext(currentTaskContext);
+    const { taskId, setTaskId} = useContext(TaskContext);
 
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);

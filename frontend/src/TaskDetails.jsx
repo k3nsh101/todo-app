@@ -8,14 +8,14 @@ import Chip from '@mui/material/Chip';
 import dayjs from "dayjs";
 
 import LongMenu from "./LongMenu";
-import { currentTaskContext } from "./currentTaskContext";
+import { TaskContext } from "./Context";
 
 import useTask from "./useTask";
 
 import "./taskdetails.css";
 
 export default function TaskDetails() {
-    const { taskId, setTaskId} = useContext(currentTaskContext);
+    const { taskId, setTaskId} = useContext(TaskContext);
     const task = useTask(taskId.taskId);
     const options = ["Update", "Exit"];
 
