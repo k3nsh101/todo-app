@@ -19,17 +19,37 @@ const authRouter = require("./routes/auth");
 const app = express();
 app.use(cors({credentials: true, origin: "http://localhost:5173"}));
 
-app.use(session({secret: "cats", resave: false, saveUninitialized: false}));
+app.use(
+    session({
+        secret: "cats", 
+        resave: false, 
+        saveUninitialized: false, 
+        cookie: {
+            maxAge: 60000 * 60
+        },
+    })
+);
+
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use('/tasks', tasksRouter);
-app.use('/category', categoryRouter);
+
 app.use('/users', userRouter);
 app.use("/auth", authRouter);
+
+app.use((req, res, next) => {
+    if (req.user) {
+        next()
+    } else {
+        res.sendStatus(401);
+    }
+  });
+
+app.use('/tasks', tasksRouter);
+app.use('/category', categoryRouter);
 
 app.listen(port, function() {
     console.log(`App listening on the port http://localhost:${port}/`);
