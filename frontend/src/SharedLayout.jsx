@@ -1,26 +1,55 @@
 // navigation bar
-import { Link, Outlet } from "react-router-dom";
-import { Box, Button } from "@mui/material";
+import { useContext, useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
+import { Box, Button, Snackbar, Alert } from "@mui/material";
+
+import { UserContext } from "./Context";
 import logout from "./logout";
 
 import logo from "/logo.webp";
 
 import "./sharedlayout.css";
 
+
 export default function SharedLayout() {
+    const userId = useContext(UserContext).userId;
+    const navigate = useNavigate();
+
+    const [alert, setAlert] = useState({
+        open: false,
+        content: "",
+        severity: ""
+    });
+
+    const handleAlertClose = () => {
+        setAlert({
+            open: false,
+            severity: "",
+            content: ""
+        })
+    }
+
     const handleLogout = async () => {
         try {
             const res = await logout();
-            console.log(res);
+            setAlert({
+                open: true,
+                severity: "success",
+                content: "Logging out."
+            })
+            setTimeout(() => navigate("/login") , 1000);
+
         } catch (err) {
             console.log(err);
+            navigate("/login");
         }
-
     };
 
     return(
         <>
+        { userId ?
+            <>
             <header>
                 <div className="container">
                     <Link to="/">
@@ -47,6 +76,10 @@ export default function SharedLayout() {
             <main>
                 <Outlet />
             </main>
+            </> : <h2>Not authenticated</h2>}
+            {alert ? <Snackbar open={alert.open} onClose={handleAlertClose} autoHideDuration={1000} anchorOrigin={{vertical:"top", horizontal:"center"}}>
+                    <Alert severity={alert.severity}>{alert.content}</Alert>
+                </Snackbar> : <></>} 
         </>
     )
 

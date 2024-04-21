@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
+import { UserContext } from "./Context";
 
 import { TextField, Stack, Button, IconButton, Avatar, Box, Typography } from "@mui/material";
 import FormControl from '@mui/material/FormControl';
@@ -11,12 +13,15 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import authenticateUser from "./authenticateUser";
+import checkUserStatus from "./checkUserStatus";
 
 export default function Login() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const { userId, setUserId} = useContext(UserContext);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -29,6 +34,8 @@ export default function Login() {
             )
     
             if (res.status == 200){
+                const userStatus = await checkUserStatus();
+                setUserId(userStatus);
                 navigate("/");
             }
         } catch (err) {
