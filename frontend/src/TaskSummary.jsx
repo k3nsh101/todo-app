@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import dayjs from "dayjs";
 
@@ -7,18 +7,19 @@ import Checkbox from '@mui/material/Checkbox';
 import ListItem from '@mui/material/ListItem';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { TaskContext } from "./Context";
+import { TaskContext, UserContext } from "./Context";
 import Popup from "./Popup";
 
 import TaskDetails from "./TaskDetails";
-import getTasks from "./useTasksList";
+import getPendingTasks from "./useTasksList";
 import deleteTask from "./deleteTask";
 import checkTask from "./checkTask";
 
 import "./home.css";
 
 export default function TaskSummary() {
-    const tasks_list = getTasks();
+    const { userId, setUserId } = useContext(UserContext);
+    const tasks_list = getPendingTasks(userId);
 
     const [openPopup, setOpenPopup] = useState(false);
     const [taskId, setTaskId] = useState("");
@@ -26,11 +27,16 @@ export default function TaskSummary() {
     const [alert, setAlert] = useState(false);
     const [alertContent, setAlertContent] = useState("");
 
-    const [checked, setChecked] = useState(false);
+    const [checked, setChecked] = useState([]);
 
-    const handleChange = async (event, id) => {
-        setChecked(event.target.checked);
-        const res = await checkTask(id);
+    const handleChange = async (event, taskId) => {
+        if (event.target.checked){
+            setChecked([...checked, event.target.value]);
+        } else {
+            setChecked(checked.filter((item) => item !== event.target.value))
+        }
+
+        const res = await checkTask(userId, taskId);
         if (res.statusText === "OK"){
             setAlertContent("Task completed");
             setAlert(true);
@@ -49,7 +55,7 @@ export default function TaskSummary() {
     };
 
     const handleDeleteClick = async (task_id) => {
-        const res = await deleteTask(task_id);
+        const res = await deleteTask(userId, task_id);
         if (res.statusText === "OK"){
             setAlertContent("Task deleted successfully");
             setAlert(true);
@@ -96,7 +102,7 @@ export default function TaskSummary() {
                                 >
                                 <ListItemIcon>
                                     <Checkbox
-                                        checked={checked}
+                                        // checked={checked}
                                         onChange={(event) => handleChange(event, id)}
 
                                     />
