@@ -5,7 +5,7 @@ axios.defaults.withCredentials = true;
 
 import { useState, useEffect } from "react";
 
-export default function useTask(taskId) {
+export default function useTask(userId, taskId) {
     const [taskData, setTaskData] = useState({
         title: "",
         dueData: "",
@@ -23,13 +23,13 @@ export default function useTask(taskId) {
 
         async function getTask() {
             const res = await axios.get(
-                `http://localhost:3000/tasks/${taskId}`
+                `http://localhost:3000/users/${userId}/tasks/${taskId}`
             );
-            
-            const tasks = await res.data;
+
+            const tasks = await res.data[0];
             setTaskData(tasks);
         }
-    }, [taskId]);
+    }, [userId, taskId]);
 
     return taskData;
 }

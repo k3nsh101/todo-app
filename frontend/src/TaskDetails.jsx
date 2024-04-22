@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 
 import LongMenu from "./LongMenu";
 import { TaskContext } from "./Context";
+import { UserContext } from "./Context";
 
 import useTask from "./useTask";
 
@@ -16,7 +17,8 @@ import "./taskdetails.css";
 
 export default function TaskDetails() {
     const { taskId, setTaskId} = useContext(TaskContext);
-    const task = useTask(taskId.taskId);
+    const { userId, setUserId} = useContext(UserContext);
+    const task = useTask(userId, taskId.taskId);
     const options = ["Update", "Exit"];
 
     if (!task.categoryID){

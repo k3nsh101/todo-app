@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { InputLabel, TextField, Button, Select, MenuItem, IconButton, Snackbar, Alert } from "@mui/material"
@@ -9,9 +9,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import useCategoryList from "./useCategoryList";
+import { UserContext } from "./Context";
 import addTask from "./addTask";
 
 const TaskForm = () => {
+    const { userId, setUserId} = useContext(UserContext);
     const navigate = useNavigate();
 
     const categoryList = useCategoryList();
@@ -40,6 +42,7 @@ const TaskForm = () => {
 
     const onSubmit = async () => {
         const formData = {
+            userId: userId,
             taskName: getValues("taskName"),
             dueDate: getValues("dueDate"),
             category: getValues("category"),

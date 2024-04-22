@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
@@ -15,10 +15,14 @@ import useCategoryList from "./useCategoryList";
 import useTask from "./useTask";
 import updateTask from "./updateTask";
 
+import { UserContext } from "./Context";
+
 
 const TaskForm = () => {
+    const { userId, setUserId } = useContext(UserContext);
     const { taskId } = useParams();
-    const taskData = useTask(taskId);
+
+    const taskData = useTask(userId, taskId);
     if (!taskData.categoryID){
         taskData.categoryID = {
             title: ""
@@ -75,6 +79,7 @@ const TaskForm = () => {
 
     const onSubmit = async () => {
         const formData = {
+            userId,
             taskId,
             taskName: getValues("taskName"),
             dueDate: getValues("dueDate"),

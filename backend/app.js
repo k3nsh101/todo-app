@@ -48,7 +48,7 @@ app.use((req, res, next) => {
     }
   });
 
-app.use('/tasks', tasksRouter);
+app.use('/users/:userId/tasks', tasksRouter);
 app.use('/category', categoryRouter);
 
 app.listen(port, function() {

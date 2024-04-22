@@ -1,9 +1,9 @@
 import axios from "axios";
 axios.defaults.withCredentials = true;
 
-export default async function checkTask(taskId){
+export default async function checkTask(userId, taskId){
     const res = await axios.put(
-        `http://localhost:3000/tasks/${taskId}`,
+        `http://localhost:3000/users/${userId}/tasks/${taskId}`,
         {
             status: "Completed",
         },

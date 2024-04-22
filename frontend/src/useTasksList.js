@@ -5,21 +5,19 @@ axios.defaults.withCredentials = true;
 
 import { useState, useEffect } from "react";
 
-export default function useTasksList() {
+export default function useTasksList(userId) {
     const [tasksList, setTasksList] = useState([]);
 
     useEffect(() => {
-        getTasksList();
+        getPendingTasksList();
 
-        async function getTasksList() {
-            const res = await axios.get(
-                "http://localhost:3000/tasks",
-            );
+        async function getPendingTasksList() {
+            const res = await axios.get(`http://localhost:3000/users/${userId}/tasks`);
             
             const tasks = await res.data;
     
             setTasksList(tasks);
         }
-    }, []);
+    }, [userId]);
     return tasksList;
 }
