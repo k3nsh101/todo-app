@@ -13,7 +13,7 @@ import "./sharedlayout.css";
 
 
 export default function SharedLayout() {
-    const userId = useContext(UserContext).userId;
+    const { userId, setUserId } = useContext(UserContext);
     const navigate = useNavigate();
 
     const [alert, setAlert] = useState({
@@ -37,8 +37,12 @@ export default function SharedLayout() {
                 open: true,
                 severity: "success",
                 content: "Logging out."
-            })
-            setTimeout(() => navigate("/login") , 1000);
+            });
+
+            setTimeout(() => {
+                setUserId("");
+                navigate("/login") 
+            }, 1000);
 
         } catch (err) {
             console.log(err);
